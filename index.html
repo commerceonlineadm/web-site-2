@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <base target="_top">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f4;
+      color: #333;
+      margin: 20px;
+    }
+
+    h1 {
+      color: #333;
+      text-align: center;
+    }
+
+    p {
+      margin-bottom: 20px;
+    }
+
+    #products {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+    }
+
+    .product {
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 15px;
+      margin: 15px;
+      width: 300px;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+
+    h3 {
+      color: #555;
+    }
+
+    p.product-description {
+      color: #777;
+      margin-bottom: 10px;
+    }
+
+    p.product-price {
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    input {
+      width: 60px;
+      padding: 5px;
+      margin-right: 10px;
+      text-align: center;
+      border: 1px solid #ddd;
+      border-radius: 3px;
+    }
+
+    button {
+      padding: 8px 15px;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Магазин товарів</h1>
+
+  <p>Текстовий блок з описом вашого магазину.</p>
+
+  <div id="products">
+    <!-- Тут буде виводитись інформація про товари -->
+  </div>
+
+  <p>Ще один текстовий блок або опис.</p>
+
+  <script>
+    // Завантаження товарів при завантаженні сторінки
+    google.script.run.withSuccessHandler(displayProducts).getProductsData();
+
+    function displayProducts(products) {
+      var productsDiv = document.getElementById('products');
+
+      products.forEach(function (product) {
+        var productDiv = document.createElement('div');
+        productDiv.className = 'product';
+        productDiv.innerHTML = `
+          <img src="${product.image}" alt="${product.name}">
+          <h3>${product.name}</h3>
+          <p class="product-description">${product.description}</p>
+          <p class="product-price">Ціна: ${product.price} грн</p>
+          <label for="quantity${product.id}">Кількість:</label>
+          <input type="number" id="quantity${product.id}" value="1" min="1">
+          <button onclick="addToCart(${product.id})">Додати в кошик</button>
+        `;
+        productsDiv.appendChild(productDiv);
+      });
+    }
+
+    function addToCart(productId) {
+      var quantity = document.getElementById('quantity' + productId).value;
+      google.script.run.withSuccessHandler(alertUser).addToCart(productId, quantity);
+    }
+
+    function alertUser(message) {
+      alert(message);
+    }
+  </script>
+</body>
+
+</html>
